@@ -1,0 +1,10 @@
+dist
+node_modules
+*.js.map
+*.d.ts
+.yarn
+DashboardPage.vue
+MapPage.vue
+queryuser.js
+TodoApp.vue
+FeedbackApp.vue

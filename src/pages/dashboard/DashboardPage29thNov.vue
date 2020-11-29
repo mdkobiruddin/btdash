@@ -5,12 +5,10 @@
       <v-tabs
         v-model="tabs"
         centered
-        color="blue"
       >
         <v-tab
           v-for="i in 2"
           :key="i"
-          class="px-5 py-2"
         >
         <v-icon left>mdi-chart-arc</v-icon>  Bar {{ i }}
         </v-tab>
@@ -50,24 +48,23 @@
       </v-tabs-items>
     </v-card>
 
-    <!-- Group/Individual or Event Selection-->
-    <v-card class="grey lighten-5 mt-2">
-      <v-container>
-        <v-row>
+    <!-- Group or Individual Selection -->
+    <v-form class="blue lighten-2 red--text">
+      <v-container class="red lighten-2">
+        <v-row  class="green lighten-2" mb-1 pb-1 style="margin-bottom:0px !important; padding-bottom:0px !important;">
           <!-- Group Switch -->
-          <v-col cols="3" class="title cyan lighten-4 white--text">
-              <v-switch
-              class="ml-4"
-              inset
-              v-model="mode"
-              color="red"
-              :label="`Mode: ${chartType.toString()}`"
-              @change="toggleChartType($event)"
-              ></v-switch>
+          <v-col cols="2" class="lime lighten-2">
+            <v-switch
+            inset
+            v-model="mode"
+            color="red"
+            :label="`Mode: ${chartType.toString()}`"
+            @change="toggleChartType($event)"
+            ></v-switch>
           </v-col>
 
           <!-- Date Selection -->
-          <v-col cols="3" class="deep-purple lighten-4 white--text">
+          <v-col cols="3" class="pink lighten-2">
             <v-dialog
               ref="dialog"
               v-model="modal"
@@ -77,8 +74,8 @@
             >
               <template v-slot:activator="{ on, attrs }">
               <v-text-field
+              class="white--text"
               v-model="dates"
-              class="title"
               label="Select Date Range"
               prepend-icon="mdi-calendar"
               readonly
@@ -111,45 +108,8 @@
             </v-dialog>
           </v-col>
 
-          <!-- Time Range Selection -->
-          <v-col cols="3" class="green lighten-4 mt-0 pt-1">
-            <v-subheader class="justify-center title">Select time range</v-subheader>
-            <v-range-slider
-              v-model="timerange"
-              :max="timemax"
-              :min="timemin"
-              hide-details
-              class="align-center"
-            >
-            <template v-slot:prepend>
-              <v-text-field
-                :value="timerange[0]"
-                class="mt-0 pt-0"
-                hide-details
-                single-line
-                type="number"
-                style="width: 60px;"
-                @change="$set(timerange, 0, $event)"
-              ></v-text-field>
-            </template>
-            <template v-slot:append>
-              <v-text-field
-                :value="timerange[1]"
-                class="mt-0 pt-0"
-                hide-details
-                single-line
-                type="number"
-                style="width: 60px"
-                @change="$set(timerange, 1, $event)"
-              ></v-text-field>
-            </template>
-          </v-range-slider>
-          </v-col>          
-
           <!-- Age Range Selection -->
-          <v-col cols="3" v-show="!mode"  class="blue lighten-4 mt-0 pt-1">
-
-            <v-subheader class="justify-center title">Set min and max age</v-subheader>
+          <v-col cols="3" v-show="!mode"  class="blue lighten-2">
             <v-range-slider
               v-model="range"
               :max="max"
@@ -182,177 +142,201 @@
           </v-range-slider>
           </v-col>
 
+          <!-- Time Range Selection -->
+          <v-col cols="3" class="indigo lighten-2">
+            <v-range-slider
+              v-model="timerange"
+              :max="timemax"
+              :min="timemin"
+              hide-details
+              class="align-center"
+            >
+            <template v-slot:prepend>
+              <v-text-field
+                :value="timerange[0]"
+                class="mt-0 pt-0"
+                hide-details
+                single-line
+                type="number"
+                style="width: 60px"
+                @change="$set(timerange, 0, $event)"
+              ></v-text-field>
+            </template>
+            <template v-slot:append>
+              <v-text-field
+                :value="timerange[1]"
+                class="mt-0 pt-0"
+                hide-details
+                single-line
+                type="number"
+                style="width: 60px"
+                @change="$set(timerange, 1, $event)"
+              ></v-text-field>
+            </template>
+          </v-range-slider>
+          </v-col>
           
           <!-- Search with Number -->
-          <v-col cols="3" v-show="mode" class="green lighten-4  mb-0 pb-0 pt-4">
-            <span class="d-inline-flex">
-            <v-text-field
-              v-model="email"
-              color="title"
-              outlined
-              label='Enter mobile number'
-              type='text'
-            ></v-text-field>
-            <v-btn
-              @click="searchUsersByEmail"
-              x-large
-              elevation="4"
-              class="ml-2"
-              color="primary"
-            >
-            <v-icon left>
-              large
-              mdi-feature-search-outline
-            </v-icon>
-              Search
-            </v-btn>
-            </span>
+          <v-col cols="4" v-show="mode" class="orange lighten-2">
+            <v-form  transition="scroll-y-transition" ref="form" v-model="form">
+              <v-col class="d-inline-flex">
+                <v-text-field
+                  v-model="email"
+                  outlined
+                  label='Enter mobile number'
+                  type='text'
+                ></v-text-field>
+                <v-btn
+                  @click="searchUsersByEmail"
+                  :disabled="!form"
+                  x-large
+                  elevation="4"
+                  class="ml-2"
+                  color="primary"
+                >
+                <v-icon left>
+                  large
+                  mdi-feature-search-outline
+                </v-icon>
+                  Search
+                </v-btn>
+              </v-col>
+            </v-form>
           </v-col>
         </v-row>
-      
-        <!-- Event Selection -->
+      </v-container>
+    </v-form>
 
-        <v-row>
-          <v-col cols="6" class="ml-0 px-0 outlined">
-            <v-card class="red lighten-5 pb-4 mr-1 px-0">
-              <v-card-title class="red lighten-1 justify-center">
-                <v-icon
-                      left
-                      large
-                      color="white lighten-2">mdi-alarm-light-outline
-                    </v-icon>
-                    <span class="headline white--text">SOS</span>
-              </v-card-title>
-            <v-divider></v-divider>
-            
-            <v-row class="flex-grow-0" dense>
-              <v-col cols="4">
-                <v-checkbox
-                  class="px-2 pt-1"
-                  v-model="challengeCheck"
-                  label="Confront"
-                  color="primary"
-                  v-on:change="checkBoxTest('challenge')"
-                  hide-details
-                ></v-checkbox>
-
-                <v-checkbox
-                  class="px-2"
-                  v-model="challengeSMSCheck"
-                  label="Confront SMS"
-                  color="primary"
-                  v-on:change="checkBoxTest('challenge-sms')"
-                  hide-details
-                ></v-checkbox>
-              </v-col>
-
-                <v-col cols="4">
-                <v-checkbox
-                  class="px-2 pt-1"
-                  v-model="userSMSCheck"
-                  label="User SMS"
-                  color="primary"
-                  v-on:change="checkBoxTest('user-sms')"
-                  hide-details
-                ></v-checkbox>
-
-                <v-checkbox
-                  class="px-2"
-                  v-model="alarmCheck"
-                  label="Alarm"
-                  color="primary"
-                  v-on:change="checkBoxTest('alarm')"
-                  hide-details
-                ></v-checkbox>
-              </v-col>
-
-              <v-col cols="4">
-                <v-checkbox
-                  class="px-2 pt-1"
-                  v-model="secretCheck"
-                  label="Secret"
-                  color="primary"
-                  v-on:change="checkBoxTest('secret')"
-                  hide-details
-                ></v-checkbox>
-
-                <v-checkbox
-                  class="px-2"
-                  v-model="secretSMSCheck"
-                  label="Secret SMS"
-                  color="primary"
-                  v-on:change="checkBoxTest('secret-sms')"
-                  hide-details
-                ></v-checkbox>
-              </v-col>
-            </v-row>
-            </v-card>
-          </v-col>
-
-          <v-col cols="3" class="px-1">
-            <v-card class="green lighten-5 pb-4">
-              <v-card-title class="green lighten-1 justify-center">
-                <v-icon
-                      left
-                      large
-                      color="white darken-2">mdi-road-variant
-                    </v-icon>
-                    <span class="headline white--text">Travel</span>
-              </v-card-title>
-            
-              <v-checkbox
-                class="px-2 pt-2"
-                v-model="zoneCheck"
-                label="Zone"
-                color="primary"
-                v-on:change="checkBoxTest('zone')"
-                hide-details
-              ></v-checkbox>
-
-              <v-checkbox
-                class="px-2"
-                v-model="zoneSMSCheck"
-                label="Zone SMS"
-                color="primary"
-                v-on:change="checkBoxTest('zones-sms')"
-                hide-details
-              ></v-checkbox>
-            </v-card>
-          </v-col>
-
-          <v-col cols="3" class="px-1">
-            <v-card class="amber lighten-5 pb-4">
-              <v-card-title class="amber darken-1 justify-center">
-                <v-icon
-                      left
-                      large
-                      color="white darken-2">mdi-alarm
-                    </v-icon>
-                    <span class="headline white--text">Reminder</span>
-              </v-card-title>
-
-              <v-checkbox 
-              class="px-2 pt-2"
-              v-model="timerCheck"
-              label="Reminder"
+    <v-row class="flex-grow-0" dense>
+      <v-col cols="6">
+        <v-card
+          class="pa-2"
+          outlined
+          color="blue lighten-4"
+          elevation="3"
+        >
+          <v-card ma-1 pa-1>
+            <h1 class="text-center" pt-4 mt-4><v-icon left large>mdi-alarm-light-outline</v-icon>SOS</h1>
+          </v-card>
+          
+          <v-row class="flex-grow-0" dense>
+          <v-col cols="6">
+            <v-checkbox
+              v-model="challengeCheck"
+              label="Confront"
               color="primary"
-              v-on:change="checkBoxTest('timer')"
+              v-on:change="checkBoxTest('challenge')"
               hide-details
             ></v-checkbox>
 
             <v-checkbox
-              class="px-2"
-              v-model="timerSMSCheck"
-              label="Reminder SMS"
+              v-model="challengeSMSCheck"
+              label="Confront SMS"
               color="primary"
-              v-on:change="checkBoxTest('timer-sms')"
+              v-on:change="checkBoxTest('challenge-sms')"
               hide-details
             ></v-checkbox>
-            </v-card>
+
+            <v-checkbox
+              v-model="userSMSCheck"
+              label="User SMS"
+              color="primary"
+              v-on:change="checkBoxTest('user-sms')"
+              hide-details
+            ></v-checkbox>
+          </v-col>
+
+          <v-col cols="6">
+            <v-checkbox
+              v-model="alarmCheck"
+              label="Alarm"
+              color="primary"
+              v-on:change="checkBoxTest('alarm')"
+              hide-details
+            ></v-checkbox>
+
+            <v-checkbox
+              v-model="secretCheck"
+              label="Secret"
+              color="primary"
+              v-on:change="checkBoxTest('secret')"
+              hide-details
+            ></v-checkbox>
+
+            <v-checkbox
+              v-model="secretSMSCheck"
+              label="Secret SMS"
+              color="primary"
+              v-on:change="checkBoxTest('secret-sms')"
+              hide-details
+            ></v-checkbox>
           </v-col>
         </v-row>
-      </v-container>
-    </v-card>
+        </v-card>
+      </v-col>
+
+      <v-col cols="3">
+        <v-card
+          class="pa-3"
+          outlined
+          color="blue lighten-4"
+          elevation="3"
+        >
+          <h1>
+            <v-icon 
+              large
+              color="blue darken-2">mdi-road-variant
+            </v-icon>Travel
+          </h1>
+          <v-checkbox
+            v-model="zoneCheck"
+            label="Zone"
+            color="primary"
+            v-on:change="checkBoxTest('zone')"
+            hide-details
+          ></v-checkbox>
+
+          <v-checkbox
+            v-model="zoneSMSCheck"
+            label="Zone SMS"
+            color="primary"
+            v-on:change="checkBoxTest('zones-sms')"
+            hide-details
+          ></v-checkbox>
+        </v-card>
+      </v-col>
+
+      <v-col cols="3">
+        <v-card
+          class="pa-3"
+          outlined
+          color="blue lighten-4"
+          elevation="3"
+        >
+        <h1>
+          <v-icon
+            large
+            color="blue darken-2">mdi-alarm
+          </v-icon>Reminder
+        </h1>
+        <v-checkbox
+          v-model="timerCheck"
+          label="Reminder"
+          color="primary"
+          v-on:change="checkBoxTest('timer')"
+          hide-details
+        ></v-checkbox>
+
+        <v-checkbox
+          v-model="timerSMSCheck"
+          label="Reminder SMS"
+          color="primary"
+          v-on:change="checkBoxTest('timer-sms')"
+          hide-details
+        ></v-checkbox>
+        </v-card>
+      </v-col>
+    </v-row>
   </div>
 </template>
 

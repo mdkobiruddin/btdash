@@ -1,8 +1,8 @@
 export default [{
   path: '',
-  redirect: 'feedback'
+  redirect: 'feedbackold'
 }, {
-  path: 'feedback',
+  path: 'feedbackold',
   name: 'apps-feedback-feedback',
   component: () => import(/* webpackChunkName: "apps-feedback-feedback" */ '@/apps/feedback/pages/FeedbackTasksPage.vue')
 }, {

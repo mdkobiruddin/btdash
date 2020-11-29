@@ -2,53 +2,16 @@
   <div class="d-flex flex-grow-1 flex-column">
   <!-- Tabs -->
     <v-card>
-      <v-tabs
-        v-model="tabs"
-        centered
-        color="blue"
-      >
-        <v-tab
-          v-for="i in 2"
-          :key="i"
-          class="px-5 py-2"
-        >
-        <v-icon left>mdi-chart-arc</v-icon>  Bar {{ i }}
-        </v-tab>
-      </v-tabs>
-
-      <v-tabs-items v-model="tabs">
-        <v-tab-item>
-          <v-row class="flex-grow-0" dense>
-            <v-col cols="12">
-              <column-card
-                class="h-full"
-                style="min-height: 380px"
-                :value="1837.32"
-                :percentage="3.2"
-                :loading="isLoading1"
-                :percentage-label="$t('dashboard.lastweek')"
-                :action-label="$t('dashboard.viewReport')"
-              ></column-card>
-            </v-col>
-          </v-row>
-        </v-tab-item>
-        <v-tab-item>
-            <v-row class="flex-grow-0" dense>
-            <v-col cols="12">
-              <pie-card
-                class="h-full"
-                style="min-height: 380px"
-                :value="1837.32"
-                :percentage="3.2"
-                :loading="isLoading1"
-                :percentage-label="$t('dashboard.lastweek')"
-                :action-label="$t('dashboard.viewReport')"
-              ></pie-card>
-            </v-col>
-          </v-row>
-        </v-tab-item>
-      </v-tabs-items>
-    </v-card>
+      <map-card
+        class="h-full"
+        style="min-height: 380px"
+        :value="1837.32"
+        :percentage="3.2"
+        :loading="isLoading1"
+        :percentage-label="$t('dashboard.lastweek')"
+        :action-label="$t('dashboard.viewReport')"
+      ></map-card>
+     </v-card>
 
     <!-- Group/Individual or Event Selection-->
     <v-card class="grey lighten-5 mt-2">
@@ -359,16 +322,13 @@
 <script>
 // DEMO Cards for dashboard
 //import SalesCard from '../../components/dashboard/InboxCard'
-import ColumnCard from '../../pages/ui/charts/_examples/apex-charts/simple/column'
-import PieCard from '../../pages/ui/charts/_examples/echarts/pie'
+import MapCard from '../../pages/ui/maps/_examples/google-maps/simple/info-window'
 import { db } from '../../main'
 import moment from 'moment'
 const query = db.collection('users')
 export default {
   components: {
-    ColumnCard,
-    PieCard
-
+    MapCard
   },
   data() {
     return {
@@ -397,7 +357,9 @@ export default {
       zoneList:[],
       zoneSMSList:[],
       alarmList:[],
-      sendBarData: [],
+
+      sendMapData: [],
+
       selectChallenge: true,
       selectChallengeSMS:true,
       selectSecret:true,
@@ -433,23 +395,19 @@ export default {
 
       activeCheckBoxes:[],
 
+      mapIcons:{
+        "timer":"http://www.clker.com/cliparts/6/8/f/c/11949889971706847115clock01.svg.thumb.png",
+        "timer-sms":"http://www.clker.com/cliparts/6/8/f/c/11949889971706847115clock01.svg.thumb.png",
+        "challenge":"http://www.clker.com/cliparts/3/7/1/3/1194984910785474358stop_sign_miguel_s_nchez_.svg.thumb.png",
+        "challenge-sms":"http://www.clker.com/cliparts/3/7/1/3/1194984910785474358stop_sign_miguel_s_nchez_.svg.thumb.png",
+        "secret":"http://www.clker.com/cliparts/b/3/f/6/11971484551794044476earlyswerver_UK_Speed_Camera_Sign.svg.thumb.png",
+        "secret-sms":"http://www.clker.com/cliparts/b/3/f/6/11971484551794044476earlyswerver_UK_Speed_Camera_Sign.svg.thumb.png",
+        "zone":"http://www.clker.com/cliparts/2/9/b/8/1194984775760075334button-green_benji_park_01.svg.thumb.png",
+        "zones-sms":"http://www.clker.com/cliparts/2/9/b/8/1194984775760075334button-green_benji_park_01.svg.thumb.png",
+        "alarm":"http://www.clker.com/cliparts/h/z/l/u/l/s/speaker-volume-3-th.png",
+        "user-sms":"http://www.clker.com/cliparts/1/T/E/E/t/C/sms-text-th.png"
+     }
 
-      //slider data
-      min: 10,
-      max: 80,
-      range: [10, 80],
-
-      //slider data     
-      timemin: 0,
-      timemax: 24,
-      timerange: [0, 24],
-
-
-      //Tabs data
-
-      tabs: null,
-        text: '',
-      
 
     }
   },
@@ -477,7 +435,7 @@ export default {
       this.zoneList = []
       this.zoneSMSList = []
       this.alarmList = []
-      this.sendBarData = []
+      this.sendMapData = []
 
       this.challengeCheck = false
       this.challengeSMSCheck = false
@@ -492,7 +450,7 @@ export default {
 
       this.activeCheckBoxes=[]
 
-      this.$store.dispatch('queryuser/setNewBarChartData',Object.values(this.sendBarData))
+      this.$store.dispatch('queryuser/setNewMapData',Object.values(this.sendMapData))
     },
     toggleChartType(event){
       console.log(event)
@@ -523,7 +481,7 @@ export default {
 
     },
     dateChangedChecker(){
-      this.sendBarData=[]
+      this.sendMapData=[]
 
     if (this.chartType=='Group'){
 
@@ -629,17 +587,22 @@ export default {
       //context.commit("SET_MATCHES", categories)
 
       if (!fromDate){
-      for (var b=0; b<this.sendBarData.length; b++){
-        if (this.sendBarData[b]['name']==category){
+        var endThis=false;
+      for (var b=this.sendMapData.length-1; b>=0; b--){
+        if (this.sendMapData[b]['infoText']==category){
           console.log('remove it')
-          //this.sendBarData = []
-          this.sendBarData.splice(b, 1);
-          this.$store.dispatch('queryuser/setNewBarChartData',Object.values(this.sendBarData))
-            return
+          endThis=true;
+          console.log(this.sendMapData[b])
+          this.sendMapData.splice(b, 1);
+          this.$store.dispatch('queryuser/setNewMapData',Object.values(this.sendMapData))
         }else{
           console.log('add it')
         }
       }
+      if (endThis){
+        return
+      }
+
       }
 
       await db.collection(category)
@@ -678,8 +641,7 @@ export default {
 
       await this.fillGroupChartArray(testCollection, category)
 
-         console.log(this.sendBarData)
-       this.$store.dispatch('queryuser/setNewBarChartData',Object.values(this.sendBarData))
+       this.$store.dispatch('queryuser/setNewMapData',Object.values(this.sendMapData))
 
     },
 
@@ -697,8 +659,7 @@ export default {
       this.userSMSList = [],
       this.zoneList = [],
       this.zoneSMSList = [],
-      this.alarmList = [],
-      this.sendBarData = []
+      this.alarmList = []
 
       const snapshot = await db
         .collection('users')
@@ -870,7 +831,8 @@ export default {
 
   async selectChartColumns(){
 
-    this.sendBarData=[]
+
+    this.sendMapData=[]
 
     console.log(this.alarmList)
 
@@ -914,7 +876,7 @@ export default {
       await this.fillChartArray(this.alarmList, 'Alarm')
     }
 
-     this.$store.dispatch('queryuser/setNewBarChartData',Object.values(this.sendBarData))
+     this.$store.dispatch('queryuser/setNewMapData',Object.values(this.sendMapData))
 
   },
 
@@ -929,14 +891,29 @@ export default {
     for (var i=0; i<createdList.length; i++){
     for (const [key, value] of Object.entries(createdList[i])) {
           console.log(`NEW ${key}: ${value}`)
-          tabulatedList[key]++
-          //tabulatedList[key] = value.length
+          console.log(value.location.latitude)
+          var lat = value.location.latitude
+          var long = value.location.longitude
+          var info = value.category
+          var useIcon = this.mapIcons[value.category]
+          console.log('MPPPP '+useIcon)
+
+            this.sendMapData.push(
+              {
+                position: {
+                  lat: lat,
+                lng: long
+                },
+                infoText: info,
+                icon: useIcon
+              },
+            )
         }
     }
 
   console.log(tabulatedList)
 
-    await this.sendBarData.push({name: category, data: Object.values(tabulatedList)})
+    //await this.sendMapData.push({name: category, data: Object.values(tabulatedList)})
 
     return
   },
@@ -944,6 +921,7 @@ export default {
   async fillGroupChartArray(createdList, category){
 
     var tabulatedList = {}
+    var forMap={}
 
     for (var t=0; t<this.allSearchDates.length; t++){
       Object.assign(tabulatedList, {[this.allSearchDates[t]]: 0});
@@ -957,16 +935,33 @@ export default {
 
           //get values below e.g. map locations
 
-          // for (var v=0; v<value.length; v++){
-          //   console.log (value[v]['doc']['eventId'])
-          // }
+          for (var v=0; v<value.length; v++){
+            var geo = value[v]['doc']['location']
+            var lat = geo.latitude
+            var long = geo.longitude
+            var info = value[v]['doc']['category']
+
+            var useIcon = this.mapIcons[value[v]['doc']['category']]
+
+            this.sendMapData.push(
+              {
+                position: {
+                  lat: lat,
+                lng: long
+                },
+                infoText: info,
+               icon : useIcon
+              },
+            )
+            //console.log (geo.latitude)
+          }
 
         }
     }
 
   //console.log(tabulatedList)
 
-    await this.sendBarData.push({name: category, data: Object.values(tabulatedList)})
+   // await this.sendMapData.push({name: category, data: Object.values(tabulatedList)})
 
     return
   }

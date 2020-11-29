@@ -8,3 +8,5 @@ MapPage.vue
 queryuser.js
 TodoApp.vue
 FeedbackApp.vue
+ToolbarNotifications.vue
+DefaultLayout.vue

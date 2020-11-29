@@ -64,7 +64,7 @@ export default {
   usermenu: {
     profile: 'Profile',
     signin: 'Sign In',
-    dashboard: 'Dashboard',
+    dashboard: 'Charts',
     signout: 'Sign Out'
   },
   error: {
@@ -148,10 +148,16 @@ export default {
   },
   menu: {
     search: 'Search (press "ctrl + /" to focus)',
-    dashboard: 'Dashboard',
+    dashboard: 'Charts',
     logout: 'Logout',
     profile: 'Profile',
     blank: 'Blank Page',
+    charts: 'Charts',
+    action: 'Actions',
+    appfeedback: 'Feedback',
+    maps: 'Maps',
+    mapspage: 'Maps',
+    map: 'Map',
     pages: 'Pages',
     others: 'Others',
     email: 'Email',

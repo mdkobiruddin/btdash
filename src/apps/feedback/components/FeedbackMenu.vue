@@ -1,12 +1,12 @@
 <template>
   <div>
-    <v-btn
+    <!-- <v-btn
       block
       large
       color="primary"
       class="mb-3"
       @click="$emit('open-compose')"
-    >{{ $t('feedback.addTask') }}</v-btn>
+    >{{ $t('feedback.addTask') }}</v-btn> -->
 
     <v-list nav class="mt-2 pa-0">
       <v-list-item to="/apps/feedback/tasks" active-class="primary--text" link>

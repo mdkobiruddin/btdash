@@ -12,12 +12,18 @@ Vue.use(Router)
 
 export const routes = [{
   path: '/',
-  redirect: '/dashboard/analytics'
+  redirect: '/charts'
 }, {
-  path: '/dashboard/analytics',
-  name: 'dashboard-analytics',
+  path: '/charts',
+  name: 'charts',
   beforeEnter: guard,
   component: () => import(/* webpackChunkName: "dashboard" */ '@/pages/dashboard/DashboardPage.vue')
+},
+{
+  path: '/mapspage',
+  name: 'mapspage',
+  beforeEnter: guard,
+  component: () => import(/* webpackChunkName: "dashboard" */ '@/pages/dashboard/MapsPage.vue')
 },
 ...PagesRoutes,
 ...UsersRoutes,

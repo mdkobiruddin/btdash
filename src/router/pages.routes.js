@@ -7,9 +7,9 @@ export default [{
   }
 },
 {
-  path: '/dashboard/map',
+  path: '/maps',
   name: 'map',
-  component: () => import(/* webpackChunkName: "map" */ '@/pages/dashboard/MapPage.vue'),
+  component: () => import(/* webpackChunkName: "map" */ '@/pages/dashboard/MapsPage.vue'),
   meta: {
     layout: 'map'
   }

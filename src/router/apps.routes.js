@@ -16,7 +16,7 @@ export default [{
     ...chatRoutes
   ]
 }, {
-  path: '/apps/todo',
+  path: '/actions',
   component: () => import(/* webpackChunkName: "apps-todo" */ '@/apps/todo/TodoApp.vue'),
   children: [
     ...todoRoutes
